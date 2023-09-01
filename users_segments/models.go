@@ -1,7 +1,7 @@
 package users_segments
 
 import (
-	"backend-trainee-assignment-2023/db"
+	"backend-trainee-assignment-2023/config"
 	"backend-trainee-assignment-2023/segments"
 	"database/sql"
 	"errors"
@@ -34,7 +34,7 @@ func DeleteUserSegmentWithSegmentName(tx *sql.Tx, userId int, segmentName string
 }
 
 func SelectUserSegments(userId int) (segmentNames []string, err error) {
-	rows, err := db.DB.Query("SELECT SegmentName FROM UsersSegments NATURAL JOIN Segments WHERE UserId=$1", userId)
+	rows, err := config.DB.Query("SELECT SegmentName FROM UsersSegments NATURAL JOIN Segments WHERE UserId=$1", userId)
 	if err != nil {
 		return
 	}

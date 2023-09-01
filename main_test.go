@@ -1,29 +1,33 @@
 package main
 
 import (
-	"backend-trainee-assignment-2023/db"
+	"backend-trainee-assignment-2023/config"
+	"backend-trainee-assignment-2023/records"
 	"backend-trainee-assignment-2023/segments"
 	"backend-trainee-assignment-2023/users_segments"
 	"bytes"
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
-	// "os"
-	// "path"
+	"os"
+	"path/filepath"
 	"reflect"
 	"sort"
 	"testing"
+	"time"
 )
 
 func init() {
-	db.Init(true)
+	config.Init(true)
 }
 
 func clearDB() {
-	for _, table := range db.TABLES {
-		_, err := db.DB.Exec(fmt.Sprintf("DELETE FROM %v;", table))
+	for _, table := range config.TABLES {
+		_, err := config.DB.Exec(fmt.Sprintf("DELETE FROM %v;", table))
 		if err != nil {
 			log.Printf("Couldn't clear table %v: %v\n", table, err)
 		}
@@ -68,8 +72,7 @@ func updateUserSegments(segmentsToAdd, segmentsToDelete []string, userId int) *h
 
 func userSegments(userId int) *http.Response {
 	uri := fmt.Sprintf("/userSegments?userId=%v", userId)
-	body, _ := json.Marshal(&struct{ UserId int }{userId})
-	req := httptest.NewRequest(http.MethodGet, uri, bytes.NewReader(body))
+	req := httptest.NewRequest(http.MethodGet, uri, nil)
 	w := httptest.NewRecorder()
 
 	users_segments.UserSegments(w, req)
@@ -83,11 +86,78 @@ func getUserSegmentNames(t *testing.T, userId int) []string {
 		t.Errorf("%v\nexpected status code to be %v, but got %v", res.Status, http.StatusOK, res.StatusCode)
 	}
 
-	defer res.Body.Close()
 	segmentNames := make([]string, 0)
 	json.NewDecoder(res.Body).Decode(&segmentNames)
+	defer res.Body.Close()
 
 	return segmentNames
+}
+
+func generateReport(year, month, userId int) *http.Response {
+	uri := fmt.Sprintf("/report?year=%v&month=%v&userId=%v", year, month, userId)
+	req := httptest.NewRequest(http.MethodGet, uri, nil)
+	w := httptest.NewRecorder()
+
+	records.Report(w, req)
+
+	return w.Result()
+}
+
+func getReport(t *testing.T, year, month, userId int) []*records.Record {
+	res := generateReport(year, month, userId)
+	if res.StatusCode != http.StatusOK {
+		t.Errorf("%v\nexpected status code to be %v, but got %v", res.Status, http.StatusOK, res.StatusCode)
+	}
+
+	resJson := &struct{ Link string }{}
+	json.NewDecoder(res.Body).Decode(resJson)
+	defer res.Body.Close()
+
+	uri := fmt.Sprintf("/%v", resJson.Link)
+	req := httptest.NewRequest(http.MethodGet, uri, nil)
+	w := httptest.NewRecorder()
+
+	records.Reports(w, req)
+
+	res = w.Result()
+	if res.StatusCode != http.StatusOK {
+		t.Errorf("%v\nexpected status code to be %v, but got %v", res.Status, http.StatusOK, res.StatusCode)
+	}
+
+	report := make([]*records.Record, 0)
+	reader := csv.NewReader(res.Body)
+	defer res.Body.Close()
+	for {
+		fields, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			t.Error(err)
+		}
+
+		record := &records.Record{}
+		fmt.Sscan(fields[0], &record.UserId)
+		fmt.Sscan(fields[1], &record.SegmentName)
+		fmt.Sscan(fields[2], &record.Operation)
+		fmt.Sscan(fields[3], &record.Time)
+
+		report = append(report, record)
+	}
+
+	return report
+}
+
+func updateRecordTime(t *testing.T, year, month, userId, limit int) {
+	config.DB.Exec(`
+		UPDATE Records as r1 SET Time=$1
+		WHERE r1.RecordId=(
+			SELECT r2.RecordId
+			FROM Records as r2
+			WHERE r2.UserId=$2
+			LIMIT $3
+		);
+	`, time.Date(year, time.Month(month), 0, 0, 0, 0, 0, time.UTC), userId, limit)
 }
 
 func TestCreateSegment(t *testing.T) {
@@ -231,5 +301,53 @@ func TestUserSegmentsWithDeleteSegment(t *testing.T) {
 				t.Errorf("expected userSegments to be %v, but got %v", test.wants[i], userSegments)
 			}
 		}
+	}
+}
+
+func TestGenerateReport(t *testing.T) {
+	clearDB()
+
+	for _, segmentName := range []string{"s1", "s2", "s3", "s4"} {
+		createSegment(segmentName)
+	}
+
+	updateUserSegments(
+		[]string{"s1", "s2", "s3"},
+		[]string{"s2", "s3"},
+		1,
+	)
+
+	updateUserSegments(
+		[]string{"s1", "s2", "s3"},
+		[]string{"s2", "s3"},
+		2,
+	)
+
+	report := getReport(t, time.Now().Year(), int(time.Now().Month()), 1)
+	if len(report) != 5 {
+		t.Errorf("expected report len to be %v, but got %v", 5, len(report))
+	}
+
+	delete, add := 0, 0
+	for _, record := range report {
+		if record.Operation == "delete" {
+			delete++
+		} else {
+			add++
+		}
+	}
+	if delete != 2 || add != 3 {
+		t.Errorf("expected amount of delete/add records to be %v/%v, but got %v/%v", 2, 3, delete, add)
+	}
+
+	updateRecordTime(t, time.Now().Year()-1, int(time.Now().Month()), 1, 1)
+	if report = getReport(t, time.Now().Year(), int(time.Now().Month()), 1);
+		len(report) != 4 {
+		t.Errorf("expected report len to be %v, but got %v", 4, len(report))
+	}
+
+	err := os.RemoveAll(filepath.Join(config.GENERATED_DIRNAME, config.REPORTS_DIRNAME))
+	if err != nil {
+		t.Error(err)
 	}
 }

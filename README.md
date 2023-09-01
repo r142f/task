@@ -1,14 +1,19 @@
 # Сервис динамического сегментирования пользователей
 
 ### Запуск сервиса:
-```bash
-docker-compose up
-```
+- Склонируйте репозиторий. 
+- В репозитории проекта
+    ```bash
+    docker-compose up --build
+    ```
+- Серис запущен на `localhost:8080`
 
 ### Запуск тестов:
-```bash
-docker-compose --file docker-compose_test.yml up
-```
+- Склонируйте репозиторий. 
+- В репозитории проекта
+    ```bash
+    docker-compose --file docker-compose_test.yml up --build
+    ```
 
 ### Примеры запросов:
 1. Метод создания сегмента.
@@ -47,7 +52,7 @@ docker-compose --file docker-compose_test.yml up
         ```bash
         HTTP/1.1 201 CREATED
         ```
-4. Метод получения активных сегментов пользователя. Принимает на вход id пользователя.
+4. Метод получения активных сегментов пользователя. Принимает на вход id пользователя (`userId`).
     - Запрос: 
         ```bash
         curl http://localhost:8080/userSegments?userId=1
@@ -58,4 +63,27 @@ docker-compose --file docker-compose_test.yml up
         Content-Type: application/json
         ...
         ["AVITO_VOICE_MESSAGES"]
+        ```
+5. Метод формирования отчета с историей попадания/выбывания пользователя из сегмента. Принимает на вход id пользователя (`userId`), год (`year`) и месяц (`month`).
+    - Запрос:
+        ```bash
+        curl "http://localhost:8080/generateReport?year=2023&month=9&userId=1"
+        ```
+    - Ответ:
+        ```bash
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+        ...
+        {"Link":"reports/9849d4bb-cf38-491b-a45a-b83af811046c.csv"}
+        ```
+6. Метод получения отчета. Принимает на вход `Link` из ответа на предыдущий запрос.
+    - Запрос: 
+        ```bash
+        curl "http://localhost:8080/reports/9849d4bb-cf38-491b-a45a-b83af811046c.csv"
+        ```
+    - Ответ:
+        ```bash
+        HTTP/1.1 200 OK
+        ...
+        1,AVITO_VOICE_MESSAGES,add,2023-09-01 17:49:03
         ```

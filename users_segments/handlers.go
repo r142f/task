@@ -1,7 +1,7 @@
 package users_segments
 
 import (
-	"backend-trainee-assignment-2023/db"
+	"backend-trainee-assignment-2023/config"
 	"context"
 	"encoding/json"
 	"log"
@@ -31,7 +31,7 @@ func UpdateUserSegments(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 
-	tx, err := db.DB.BeginTx(context.Background(), nil)
+	tx, err := config.DB.BeginTx(context.Background(), nil)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
