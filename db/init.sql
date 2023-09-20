@@ -16,7 +16,7 @@ CREATE TABLE UsersSegments (
     UserId integer NOT NULL,
     SegmentId integer NOT NULL,
     CONSTRAINT US_UserId_SegmentId_PK PRIMARY KEY (UserId, SegmentId),
-    CONSTRAINT US_U_UserId_FK1 FOREIGN KEY (UserId) REFERENCES Users (UserId) DEFERRABLE INITIALLY immediate,
+    CONSTRAINT US_U_UserId_FK1 FOREIGN KEY (UserId) REFERENCES Users (UserId) ON DELETE CASCADE DEFERRABLE INITIALLY immediate,
     CONSTRAINT US_S_SegmentId_FK2 FOREIGN KEY (SegmentId) REFERENCES Segments (SegmentId) DEFERRABLE INITIALLY immediate
 );
 
@@ -29,7 +29,7 @@ CREATE TABLE Records (
     Operation operation NOT NULL,
     Time timestamp DEFAULT (NOW() at time zone 'utc'),
     CONSTRAINT R_RecordId_PK PRIMARY KEY (RecordId),
-    CONSTRAINT R_U_UserId_FK1 FOREIGN KEY (UserId) REFERENCES Users (UserId) DEFERRABLE INITIALLY immediate
+    CONSTRAINT R_U_UserId_FK1 FOREIGN KEY (UserId) REFERENCES Users (UserId) ON DELETE CASCADE DEFERRABLE INITIALLY immediate
 );
 
 CREATE OR REPLACE FUNCTION DeleteSegmentBeforeHandler()
@@ -50,28 +50,6 @@ CREATE OR REPLACE TRIGGER DeleteSegmentBeforeTrigger
 BEFORE DELETE ON Segments
 FOR EACH ROW
 EXECUTE PROCEDURE DeleteSegmentBeforeHandler();
-
-CREATE OR REPLACE FUNCTION DeleteUserBeforeHandler()
-  RETURNS TRIGGER
-  AS $$
-BEGIN
-  SET constraints US_U_UserId_FK1 DEFERRED;
-
-  DELETE FROM UsersSegments
-  WHERE UserId = OLD.UserId;
-
-  DELETE FROM Records
-  WHERE UserId = OLD.UserId;
-
-  RETURN OLD;
-END;
-$$
-LANGUAGE plpgsql;
-
-CREATE OR REPLACE TRIGGER DeleteUserBeforeTrigger
-BEFORE DELETE ON Users
-FOR EACH ROW
-EXECUTE PROCEDURE DeleteUserBeforeHandler();
 
 CREATE OR REPLACE FUNCTION InsertUsersSegmentsBeforeHandler()
   RETURNS TRIGGER
