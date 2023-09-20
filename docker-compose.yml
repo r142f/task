@@ -21,7 +21,7 @@ services:
       - "${POSTGRES_DEV_PORT}:5432"
     volumes:
       - db:/var/lib/postgresql/data
-      - ./sql/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
