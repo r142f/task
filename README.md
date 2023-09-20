@@ -12,7 +12,7 @@
 - Склонируйте репозиторий. 
 - В репозитории проекта
     ```bash
-    docker-compose --file docker-compose_test.yml up --build
+    docker-compose --file docker-compose_test.yml up --build --abort-on-container-exit
     ```
 
 ### Примеры запросов:

@@ -2,9 +2,9 @@ package main
 
 import (
 	"backend-trainee-assignment-2023/config"
-	"backend-trainee-assignment-2023/records"
-	"backend-trainee-assignment-2023/segments"
-	"backend-trainee-assignment-2023/users_segments"
+	"backend-trainee-assignment-2023/handlers/records"
+	"backend-trainee-assignment-2023/handlers/segments"
+	"backend-trainee-assignment-2023/handlers/users_segments"
 	"fmt"
 	"net/http"
 

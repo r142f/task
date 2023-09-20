@@ -2,7 +2,7 @@ package users_segments
 
 import (
 	"backend-trainee-assignment-2023/config"
-	"backend-trainee-assignment-2023/segments"
+	"backend-trainee-assignment-2023/handlers/segments"
 	"database/sql"
 	"errors"
 	"net/http"

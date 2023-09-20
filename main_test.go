@@ -2,9 +2,9 @@ package main
 
 import (
 	"backend-trainee-assignment-2023/config"
-	"backend-trainee-assignment-2023/records"
-	"backend-trainee-assignment-2023/segments"
-	"backend-trainee-assignment-2023/users_segments"
+	"backend-trainee-assignment-2023/handlers/records"
+	"backend-trainee-assignment-2023/handlers/segments"
+	"backend-trainee-assignment-2023/handlers/users_segments"
 	"bytes"
 	"encoding/csv"
 	"encoding/json"
@@ -341,8 +341,7 @@ func TestGenerateReport(t *testing.T) {
 	}
 
 	updateRecordTime(t, time.Now().Year()-1, int(time.Now().Month()), 1, 1)
-	if report = getReport(t, time.Now().Year(), int(time.Now().Month()), 1);
-		len(report) != 4 {
+	if report = getReport(t, time.Now().Year(), int(time.Now().Month()), 1); len(report) != 4 {
 		t.Errorf("expected report len to be %v, but got %v", 4, len(report))
 	}
 
