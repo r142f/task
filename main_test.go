@@ -165,8 +165,15 @@ func TestCreateSegment(t *testing.T) {
 
 	segmentName := "AVITO_VOICE_MESSAGES"
 	res := createSegment(segmentName)
+	segment := &segments.Segment{}
+	json.NewDecoder(res.Body).Decode(&segment)
+	defer res.Body.Close()
+
 	if res.StatusCode != http.StatusCreated {
 		t.Errorf("%v\nexpected status code to be %v, but got %v", res.Status, http.StatusCreated, res.StatusCode)
+	}
+	if segment.Name != segmentName {
+		t.Errorf("expected created segment name to be %v, but got %v", segmentName, segment.Name)
 	}
 
 	res = createSegment(segmentName)

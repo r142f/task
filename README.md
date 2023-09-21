@@ -27,6 +27,9 @@
     - Ответ:
         ```bash
         HTTP/1.1 201 Created
+        Content-Type: application/json
+        ...
+        {"Name":"AVITO_VOICE_MESSAGES"}
         ```
 2. Метод удаления сегмента. Принимает название сегмента (`name`). 
     - Запрос: 

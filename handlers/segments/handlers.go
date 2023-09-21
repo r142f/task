@@ -29,7 +29,13 @@ func CreateSegment(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
+	if err = json.NewEncoder(w).Encode(segment); err != nil {
+		log.Println(err.Error())
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
 }
 
 func DeleteSegment(w http.ResponseWriter, req *http.Request) {
