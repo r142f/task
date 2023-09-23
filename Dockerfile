@@ -10,15 +10,13 @@ RUN go mod download
 COPY . .
 
 RUN go build -a -installsuffix cgo -o main .
-
+RUN go test -c -a -installsuffix cgo -o main_test .
 
 FROM alpine:latest
 
-RUN apk add --no-cache go
-
 WORKDIR /root/
 
-COPY --from=builder /app/. .
+COPY --from=builder /app/main /app/main_test ./
 
 EXPOSE 8080
 

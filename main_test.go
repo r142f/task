@@ -248,11 +248,11 @@ func TestUserSegments(t *testing.T) {
 		userId           int
 		want             []string
 	}{
-		{nil, nil, 1, nil},
+		{nil, nil, 1, make([]string, 0)},
 		{[]string{"s1", "s2", "s3"}, nil, 1, []string{"s1", "s2", "s3"}},
 		{nil, []string{"s2"}, 1, []string{"s1", "s3"}},
 		{[]string{"s4"}, []string{"s1", "s4"}, 1, []string{"s3"}},
-		{nil, []string{"s3"}, 1, nil},
+		{nil, []string{"s3"}, 1, make([]string, 0)},
 	}
 
 	for _, test := range tests {

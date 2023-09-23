@@ -7,6 +7,7 @@
     docker-compose up --build
     ```
 - Серис запущен на `localhost:8080`
+- Swagger документация доступна на `http://localhost:8080/docs/index.html`
 
 ### Запуск тестов:
 - Склонируйте репозиторий. 

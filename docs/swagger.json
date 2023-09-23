@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "DESCRIPTION",
-        "title": "TITLE",
+        "description": "a service that stores a user and the segments in which he belongs.",
+        "title": "Segments service",
         "contact": {}
     },
     "host": "localhost:8080",
@@ -142,7 +142,7 @@
                 }
             }
         },
-        "/reports/{uuid}": {
+        "/reports/{uuid}.csv": {
             "get": {
                 "description": "A method for getting a report",
                 "produces": [
@@ -252,7 +252,8 @@
             "type": "object",
             "properties": {
                 "link": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "reports/969da7ca-dbbb-4897-b905-8e93075babb3.csv"
                 }
             }
         },

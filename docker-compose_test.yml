@@ -9,7 +9,7 @@ services:
         condition: service_healthy
     ports: 
       - "${APP_PORT}:${APP_PORT}"
-    command: go test -v .
+    command: ./main_test
 
   db_test:
     image: postgres

@@ -13,7 +13,7 @@ import (
 )
 
 type ReportLink struct {
-	Link string `json:"link"`
+	Link string `json:"link" example:"reports/969da7ca-dbbb-4897-b905-8e93075babb3.csv"`
 }
 
 type Record struct {

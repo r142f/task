@@ -75,7 +75,7 @@ type customFS struct {
 // @Produce text/csv
 // @Param uuid path string true "uuid of the report"
 // @Success 200 "OK"
-// @Router /reports/{uuid} [get]
+// @Router /reports/{uuid}.csv [get]
 func (fs *customFS) Open(name string) (http.File, error) {
 	f, err := fs.FileSystem.Open(name)
 	if err != nil {

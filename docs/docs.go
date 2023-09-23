@@ -150,7 +150,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/reports/{uuid}": {
+        "/reports/{uuid}.csv": {
             "get": {
                 "description": "A method for getting a report",
                 "produces": [
@@ -260,7 +260,8 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "link": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "reports/969da7ca-dbbb-4897-b905-8e93075babb3.csv"
                 }
             }
         },
@@ -309,8 +310,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:8080",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "TITLE",
-	Description:      "DESCRIPTION",
+	Title:            "Segments service",
+	Description:      "a service that stores a user and the segments in which he belongs.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

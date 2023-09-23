@@ -2,6 +2,7 @@ definitions:
   records.ReportLink:
     properties:
       link:
+        example: reports/969da7ca-dbbb-4897-b905-8e93075babb3.csv
         type: string
     type: object
   segments.Segment:
@@ -31,8 +32,8 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  description: DESCRIPTION
-  title: TITLE
+  description: a service that stores a user and the segments in which he belongs.
+  title: Segments service
 paths:
   /createSegment:
     post:
@@ -125,7 +126,7 @@ paths:
       summary: Form a report and get a link
       tags:
       - report
-  /reports/{uuid}:
+  /reports/{uuid}.csv:
     get:
       description: A method for getting a report
       operationId: Report

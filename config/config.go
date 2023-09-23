@@ -11,7 +11,7 @@ import (
 )
 
 var DB *sql.DB
-var TABLES = []string{"Users", "Segments", "UsersSegments", "Records"}
+var TABLES = []string{"Records", "UsersSegments", "Users", "Segments"}
 
 var POSTGRES_USER = os.Getenv("POSTGRES_DEV_USER")
 var POSTGRES_PASSWORD = os.Getenv("POSTGRES_DEV_PASSWORD")
