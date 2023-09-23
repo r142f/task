@@ -12,6 +12,10 @@ import (
 	"github.com/google/uuid"
 )
 
+type ReportLink struct {
+	Link string `json:"link"`
+}
+
 type Record struct {
 	RecordId    int
 	UserId      int

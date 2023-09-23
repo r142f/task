@@ -6,6 +6,17 @@ import (
 	"net/http"
 )
 
+// @Summary Create segment
+// @Tags segment
+// @Description Method to create a segment
+// @ID CreateSegment
+// @Accept json
+// @Produce json
+// @Param input body Segment true "segment name"
+// @Success 201 {object} Segment
+// @Failure 400
+// @Failure 405
+// @Failure 500
 func CreateSegment(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)

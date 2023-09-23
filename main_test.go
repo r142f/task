@@ -109,7 +109,7 @@ func getReport(t *testing.T, year, month, userId int) []*records.Record {
 		t.Errorf("%v\nexpected status code to be %v, but got %v", res.Status, http.StatusOK, res.StatusCode)
 	}
 
-	resJson := &struct{ Link string }{}
+	resJson := &records.ReportLink{}
 	json.NewDecoder(res.Body).Decode(resJson)
 	defer res.Body.Close()
 

@@ -29,7 +29,7 @@
         HTTP/1.1 201 Created
         Content-Type: application/json
         ...
-        {"Name":"AVITO_VOICE_MESSAGES"}
+        {"name":"AVITO_VOICE_MESSAGES"}
         ```
 2. Метод удаления сегмента. Принимает название сегмента (`name`). 
     - Запрос: 
@@ -77,7 +77,7 @@
         HTTP/1.1 200 OK
         Content-Type: application/json
         ...
-        {"Link":"reports/9849d4bb-cf38-491b-a45a-b83af811046c.csv"}
+        {"link":"reports/9849d4bb-cf38-491b-a45a-b83af811046c.csv"}
         ```
 6. Метод получения отчета. Принимает на вход `Link` из ответа на предыдущий запрос.
     - Запрос: 

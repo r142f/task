@@ -1,16 +1,25 @@
-FROM golang:alpine
+FROM golang:latest as builder
 
-RUN apk update && apk add --no-cache git && apk add --no-cache bash && apk add build-base
+ENV HOME /app
+ENV CGO_ENABLED 0
+ENV GOOS linux
 
-WORKDIR /backend-trainee-assignment-2023
-
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
 COPY . .
 
-ENV GOPROXY=direct
-RUN go mod download
+RUN go build -a -installsuffix cgo -o main .
 
-RUN go build -o /build .
+
+FROM alpine:latest
+
+RUN apk add --no-cache go
+
+WORKDIR /root/
+
+COPY --from=builder /app/. .
 
 EXPOSE 8080
 
-CMD ["/build"]
+CMD [ "./main" ]

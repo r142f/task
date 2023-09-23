@@ -8,9 +8,15 @@ import (
 	"fmt"
 	"net/http"
 
+	_ "backend-trainee-assignment-2023/docs"
 	_ "github.com/lib/pq"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
+// @title TITLE
+// @description DESCRIPTION
+
+// @host localhost:8080
 func main() {
 	config.Init(false)
 	defer config.DB.Close()
@@ -21,6 +27,7 @@ func main() {
 	http.HandleFunc("/userSegments", users_segments.UserSegments)
 	http.HandleFunc("/generateReport", records.Report)
 	http.HandleFunc(fmt.Sprintf("/%v/", config.REPORTS_DIRNAME), records.Reports)
+	http.HandleFunc("/docs/", httpSwagger.WrapHandler)
 
 	http.ListenAndServe(":8080", nil)
 }

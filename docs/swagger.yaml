@@ -1,0 +1,14 @@
+basePath: basePath
+definitions:
+  segments.Segment:
+    properties:
+      name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: DESCRIPTION
+  title: TITLE
+paths: {}
+swagger: "2.0"

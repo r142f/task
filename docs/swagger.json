@@ -1,0 +1,21 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "DESCRIPTION",
+        "title": "TITLE",
+        "contact": {}
+    },
+    "host": "localhost:8080",
+    "basePath": "basePath",
+    "paths": {},
+    "definitions": {
+        "segments.Segment": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

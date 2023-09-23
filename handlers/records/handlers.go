@@ -44,7 +44,7 @@ func Report(w http.ResponseWriter, req *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	if err = json.NewEncoder(w).Encode(&struct{ Link string }{link}); err != nil {
+	if err = json.NewEncoder(w).Encode(&ReportLink{link}); err != nil {
 		log.Println(err.Error())
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
