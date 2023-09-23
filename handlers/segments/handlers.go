@@ -12,11 +12,12 @@ import (
 // @ID CreateSegment
 // @Accept json
 // @Produce json
-// @Param input body Segment true "segment name"
+// @Param input body Segment true "Segment name"
 // @Success 201 {object} Segment
-// @Failure 400
-// @Failure 405
-// @Failure 500
+// @Failure 400 "Bad Request"
+// @Failure 405 "Method Not Allowed"
+// @Failure 500 "Internal server error"
+// @Router /createSegment [post]
 func CreateSegment(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
@@ -49,6 +50,17 @@ func CreateSegment(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// @Summary Delete segment
+// @Tags segment
+// @Description Method to delete a segment
+// @ID DeleteSegment
+// @Accept json
+// @Param input body Segment true "Segment name"
+// @Success 200 "OK"
+// @Failure 400 "Bad Request"
+// @Failure 405 "Method Not Allowed"
+// @Failure 500 "Internal server error"
+// @Router /deleteSegment [delete]
 func DeleteSegment(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodDelete {
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)

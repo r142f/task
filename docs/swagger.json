@@ -6,14 +6,289 @@
         "contact": {}
     },
     "host": "localhost:8080",
-    "basePath": "basePath",
-    "paths": {},
+    "paths": {
+        "/createSegment": {
+            "post": {
+                "description": "Method to create a segment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "segment"
+                ],
+                "summary": "Create segment",
+                "operationId": "CreateSegment",
+                "parameters": [
+                    {
+                        "description": "Segment name",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/segments.Segment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/segments.Segment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/deleteSegment": {
+            "delete": {
+                "description": "Method to delete a segment",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "segment"
+                ],
+                "summary": "Delete segment",
+                "operationId": "DeleteSegment",
+                "parameters": [
+                    {
+                        "description": "Segment name",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/segments.Segment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/generateReport": {
+            "get": {
+                "description": "A method for generating a report with the history of a user entering/exiting a segment from specified month and year until now. Returns link to the report",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "report"
+                ],
+                "summary": "Form a report and get a link",
+                "operationId": "GenerateReport",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Id of the user",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Year from",
+                        "name": "year",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Month from",
+                        "name": "month",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/records.ReportLink"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/reports/{uuid}": {
+            "get": {
+                "description": "A method for getting a report",
+                "produces": [
+                    "text/csv"
+                ],
+                "tags": [
+                    "report"
+                ],
+                "summary": "Get a report",
+                "operationId": "Report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "uuid of the report",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/updateUserSegments": {
+            "post": {
+                "description": "Method to add / delete user segments",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user_segment"
+                ],
+                "summary": "Update user segments",
+                "operationId": "UpdateSegments",
+                "parameters": [
+                    {
+                        "description": "Segment names to add/delete, user id",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/users_segments.UserSegments"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/userSegments": {
+            "get": {
+                "description": "Method to get user segments",
+                "tags": [
+                    "user_segment"
+                ],
+                "summary": "Get user segments",
+                "operationId": "UserSegments",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Get segments by userId",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        }
+    },
     "definitions": {
+        "records.ReportLink": {
+            "type": "object",
+            "properties": {
+                "link": {
+                    "type": "string"
+                }
+            }
+        },
         "segments.Segment": {
             "type": "object",
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "DISCOUNT_30"
+                }
+            }
+        },
+        "users_segments.UserSegments": {
+            "type": "object",
+            "properties": {
+                "segmentsToAdd": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "DISCOUNT_30"
+                    ]
+                },
+                "segmentsToDelete": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "VOICE_MESSAGES"
+                    ]
+                },
+                "userId": {
+                    "type": "integer",
+                    "example": 1
                 }
             }
         }

@@ -10,6 +10,19 @@ import (
 	"time"
 )
 
+// @Summary Form a report and get a link
+// @Tags report
+// @Description A method for generating a report with the history of a user entering/exiting a segment from specified month and year until now. Returns link to the report
+// @ID GenerateReport
+// @Produce json
+// @Param userId query int true "Id of the user"
+// @Param year query int true "Year from"
+// @Param month query int true "Month from"
+// @Success 200 {object} ReportLink
+// @Failure 400 "Bad Request"
+// @Failure 405 "Method Not Allowed"
+// @Failure 500 "Internal server error"
+// @Router /generateReport [get]
 func Report(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
@@ -55,6 +68,14 @@ type customFS struct {
 	http.FileSystem
 }
 
+// @Summary Get a report
+// @Tags report
+// @Description A method for getting a report
+// @ID Report
+// @Produce text/csv
+// @Param uuid path string true "uuid of the report"
+// @Success 200 "OK"
+// @Router /reports/{uuid} [get]
 func (fs *customFS) Open(name string) (http.File, error) {
 	f, err := fs.FileSystem.Open(name)
 	if err != nil {

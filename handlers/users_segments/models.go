@@ -8,6 +8,12 @@ import (
 	"net/http"
 )
 
+type UserSegments struct {
+	SegmentsToAdd    []string `json:"segmentsToAdd" example:"DISCOUNT_30"`
+	SegmentsToDelete []string `json:"segmentsToDelete" example:"VOICE_MESSAGES"`
+	UserId           int	  `json:"userId" example:"1"`
+}
+
 func InsertUserSegmentWithSegmentName(tx *sql.Tx, userId int, segmentName string) error {
 	segmentId, err := segments.SelectSegmentIdBySegmentName(segmentName)
 	if err != nil {
@@ -34,6 +40,7 @@ func DeleteUserSegmentWithSegmentName(tx *sql.Tx, userId int, segmentName string
 }
 
 func SelectUserSegments(userId int) (segmentNames []string, err error) {
+	segmentNames = make([]string, 0)
 	rows, err := config.DB.Query("SELECT SegmentName FROM UsersSegments NATURAL JOIN Segments WHERE UserId=$1", userId)
 	if err != nil {
 		return

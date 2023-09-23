@@ -55,11 +55,11 @@ func deleteSegment(segmentName string) *http.Response {
 }
 
 func updateUserSegments(segmentsToAdd, segmentsToDelete []string, userId int) *http.Response {
-	userSegments := &struct {
-		SegmentsToAdd    []string
-		SegmentsToDelete []string
-		UserId           int
-	}{segmentsToAdd, segmentsToDelete, userId}
+	userSegments := &users_segments.UserSegments{
+		SegmentsToAdd:    segmentsToAdd,
+		SegmentsToDelete: segmentsToDelete,
+		UserId:           userId,
+	}
 
 	body, _ := json.Marshal(userSegments)
 	req := httptest.NewRequest(http.MethodPost, "/updateUserSegments", bytes.NewReader(body))
@@ -75,7 +75,7 @@ func userSegments(userId int) *http.Response {
 	req := httptest.NewRequest(http.MethodGet, uri, nil)
 	w := httptest.NewRecorder()
 
-	users_segments.UserSegments(w, req)
+	users_segments.SegmentsByUser(w, req)
 
 	return w.Result()
 }

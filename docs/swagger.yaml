@@ -1,14 +1,197 @@
-basePath: basePath
 definitions:
+  records.ReportLink:
+    properties:
+      link:
+        type: string
+    type: object
   segments.Segment:
     properties:
       name:
+        example: DISCOUNT_30
         type: string
+    type: object
+  users_segments.UserSegments:
+    properties:
+      segmentsToAdd:
+        example:
+        - DISCOUNT_30
+        items:
+          type: string
+        type: array
+      segmentsToDelete:
+        example:
+        - VOICE_MESSAGES
+        items:
+          type: string
+        type: array
+      userId:
+        example: 1
+        type: integer
     type: object
 host: localhost:8080
 info:
   contact: {}
   description: DESCRIPTION
   title: TITLE
-paths: {}
+paths:
+  /createSegment:
+    post:
+      consumes:
+      - application/json
+      description: Method to create a segment
+      operationId: CreateSegment
+      parameters:
+      - description: Segment name
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/segments.Segment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/segments.Segment'
+        "400":
+          description: Bad Request
+        "405":
+          description: Method Not Allowed
+        "500":
+          description: Internal server error
+      summary: Create segment
+      tags:
+      - segment
+  /deleteSegment:
+    delete:
+      consumes:
+      - application/json
+      description: Method to delete a segment
+      operationId: DeleteSegment
+      parameters:
+      - description: Segment name
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/segments.Segment'
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "405":
+          description: Method Not Allowed
+        "500":
+          description: Internal server error
+      summary: Delete segment
+      tags:
+      - segment
+  /generateReport:
+    get:
+      description: A method for generating a report with the history of a user entering/exiting
+        a segment from specified month and year until now. Returns link to the report
+      operationId: GenerateReport
+      parameters:
+      - description: Id of the user
+        in: query
+        name: userId
+        required: true
+        type: integer
+      - description: Year from
+        in: query
+        name: year
+        required: true
+        type: integer
+      - description: Month from
+        in: query
+        name: month
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/records.ReportLink'
+        "400":
+          description: Bad Request
+        "405":
+          description: Method Not Allowed
+        "500":
+          description: Internal server error
+      summary: Form a report and get a link
+      tags:
+      - report
+  /reports/{uuid}:
+    get:
+      description: A method for getting a report
+      operationId: Report
+      parameters:
+      - description: uuid of the report
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - text/csv
+      responses:
+        "200":
+          description: OK
+      summary: Get a report
+      tags:
+      - report
+  /updateUserSegments:
+    post:
+      consumes:
+      - application/json
+      description: Method to add / delete user segments
+      operationId: UpdateSegments
+      parameters:
+      - description: Segment names to add/delete, user id
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/users_segments.UserSegments'
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "405":
+          description: Method Not Allowed
+        "500":
+          description: Internal server error
+      summary: Update user segments
+      tags:
+      - user_segment
+  /userSegments:
+    get:
+      description: Method to get user segments
+      operationId: UserSegments
+      parameters:
+      - description: Get segments by userId
+        in: query
+        name: userId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad Request
+        "405":
+          description: Method Not Allowed
+        "500":
+          description: Internal server error
+      summary: Get user segments
+      tags:
+      - user_segment
 swagger: "2.0"

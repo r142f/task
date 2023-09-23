@@ -87,6 +87,7 @@
     - Ответ:
         ```bash
         HTTP/1.1 200 OK
+        Content-Type: text/csv
         ...
         1,AVITO_VOICE_MESSAGES,add,2023-09-01 17:49:03
         ```

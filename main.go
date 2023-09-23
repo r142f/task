@@ -13,8 +13,8 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
-// @title TITLE
-// @description DESCRIPTION
+// @title Segments service
+// @description a service that stores a user and the segments in which he belongs.
 
 // @host localhost:8080
 func main() {
@@ -24,7 +24,7 @@ func main() {
 	http.HandleFunc("/createSegment", segments.CreateSegment)
 	http.HandleFunc("/deleteSegment", segments.DeleteSegment)
 	http.HandleFunc("/updateUserSegments", users_segments.UpdateUserSegments)
-	http.HandleFunc("/userSegments", users_segments.UserSegments)
+	http.HandleFunc("/userSegments", users_segments.SegmentsByUser)
 	http.HandleFunc("/generateReport", records.Report)
 	http.HandleFunc(fmt.Sprintf("/%v/", config.REPORTS_DIRNAME), records.Reports)
 	http.HandleFunc("/docs/", httpSwagger.WrapHandler)

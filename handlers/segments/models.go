@@ -5,7 +5,7 @@ import (
 )
 
 type Segment struct {
-	Name string `json:"name"`
+	Name string `json:"name" example:"DISCOUNT_30"`
 }
 
 func InsertSegment(segment *Segment) error {

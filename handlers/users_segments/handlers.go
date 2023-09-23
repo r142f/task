@@ -9,17 +9,24 @@ import (
 	"strconv"
 )
 
+// @Summary Update user segments
+// @Tags user_segment
+// @Description Method to add / delete user segments
+// @ID UpdateSegments
+// @Accept json
+// @Param input body UserSegments true "Segment names to add/delete, user id"
+// @Success 201 "Created"
+// @Failure 400 "Bad Request"
+// @Failure 405 "Method Not Allowed"
+// @Failure 500 "Internal server error"
+// @Router /updateUserSegments [post]
 func UpdateUserSegments(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 		return
 	}
 
-	userSegments := &struct {
-		SegmentsToAdd    []string
-		SegmentsToDelete []string
-		UserId           int
-	}{}
+	userSegments := &UserSegments{}
 
 	err := json.NewDecoder(req.Body).Decode(&userSegments)
 	if err != nil {
@@ -81,7 +88,17 @@ func UpdateUserSegments(w http.ResponseWriter, req *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func UserSegments(w http.ResponseWriter, req *http.Request) {
+// @Summary Get user segments
+// @Tags user_segment
+// @Description Method to get user segments
+// @ID UserSegments
+// @Param userId query int true "Get segments by userId"
+// @Success 200 {array} string
+// @Failure 400 "Bad Request"
+// @Failure 405 "Method Not Allowed"
+// @Failure 500 "Internal server error"
+// @Router /userSegments [get]
+func SegmentsByUser(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 		return
